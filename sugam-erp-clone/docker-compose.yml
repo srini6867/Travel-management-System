@@ -1,0 +1,22 @@
+services:
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: file:/app/prisma/prod.db
+      JWT_SECRET: replace-with-a-long-random-secret
+      PORT: 4000
+      CLIENT_ORIGIN: http://localhost
+    volumes:
+      - api-data:/app/prisma
+    ports:
+      - "4000:4000"
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:4000/api
+    depends_on: [api]
+    ports:
+      - "80:80"
+volumes:
+  api-data:

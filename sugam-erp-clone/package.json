@@ -1,0 +1,6 @@
+{
+  "name":"sugam-travels-erp",
+  "private":true,
+  "scripts":{"install:all":"npm install && npm --prefix backend install && npm --prefix frontend install","dev":"concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"","build":"npm --prefix frontend run build","seed":"npm --prefix backend run seed"},
+  "devDependencies":{"concurrently":"^9.1.2"}
+}
