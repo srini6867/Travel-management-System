@@ -38,10 +38,10 @@ app.post('/api/auth/login', asyncRoute(async (req,res)=>{
   const {username,password}=z.object({username:z.string().min(1),password:z.string().min(1)}).parse(req.body);
   const user=await prisma.user.findUnique({where:{username}});
   if(!user || user.status!=='ACTIVE' || !(await bcrypt.compare(password,user.passwordHash))) return res.status(401).json({error:'Invalid username or password'});
-  res.cookie('access_token',issueToken(user),{httpOnly:true,sameSite:'lax',secure:process.env.NODE_ENV==='production',maxAge:8*60*60*1000});
+  res.cookie('access_token',issueToken(user),{httpOnly:true,sameSite:'none',secure:process.env.NODE_ENV==='production',maxAge:8*60*60*1000});
   res.json({user:{id:user.id,name:user.name,username:user.username,role:user.role,status:user.status}});
 }));
-app.post('/api/auth/logout',(req,res)=>{res.clearCookie('access_token',{httpOnly:true,sameSite:'lax'});res.json({ok:true});});
+app.post('/api/auth/logout',(req,res)=>{res.clearCookie('access_token',{httpOnly:true,sameSite:'none'});res.json({ok:true});});
 app.get('/api/auth/me',auth,asyncRoute(async(req,res)=>{const user=await prisma.user.findUnique({where:{id:req.user.id},select:{id:true,name:true,username:true,role:true,status:true}});if(!user||user.status!=='ACTIVE')return res.status(401).json({error:'Inactive user'});res.json({user});}));
 
 app.get('/api/meta',auth,asyncRoute(async(req,res)=>res.json({
